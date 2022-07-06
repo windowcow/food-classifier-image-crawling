@@ -91,4 +91,5 @@ def scroll_down():
 
 
 if __name__ == "__main__":
-    download_images_with_keyword(sys.argv[1])
+    # 검색어 앞에 혜화라는 단어를 붙여서 검색했음
+    download_images_with_keyword("혜화 " + sys.argv[1])
