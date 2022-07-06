@@ -91,5 +91,4 @@ def scroll_down():
 
 
 if __name__ == "__main__":
-    sys.argv[1]
     download_images_with_keyword(sys.argv[1])
