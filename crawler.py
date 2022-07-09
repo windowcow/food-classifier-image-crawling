@@ -16,7 +16,8 @@ start_dir
 # 초기 설정 값
 
 # 스크롤 하고 로딩 기다리는 시간 (초)
-SCROLL_PAUSE_SEC = 2
+SCROLL_PAUSE_SEC = 2 # 스크롤 당 기다리는 시간
+TOTAL_SCROLL_TIME = 150 # 총 스크롤 할 시간
 
 driver = webdriver.Chrome(ChromeDriverManager().install())
 
@@ -27,6 +28,8 @@ def download_images_with_keyword(keyword: str):
         scroll_down()
     except:
         pass
+
+    food_name = keyword[3:]
 
     # url만들기
     base_url = "https://search.naver.com/search.naver?where=image&sm=tab_jum&query="
@@ -43,12 +46,12 @@ def download_images_with_keyword(keyword: str):
 
     # keyword와 같은 이름의 폴더를 만든다, pass는 이미 있는 경우를 위한거
     try:
-        os.mkdir(keyword)
+        os.mkdir(food_name)
     except:
         pass
 
     # 만든 폴더로 작업 디렉토리를 옮긴다
-    os.chdir(keyword)
+    os.chdir(food_name)
 
     n = 0
     for element in elements:
@@ -58,7 +61,7 @@ def download_images_with_keyword(keyword: str):
         src_url = element.get_attribute("src")
 
         # 그 url에서 다운로드 받는다, n은 몇 번째 사진인지
-        urllib.request.urlretrieve(src_url, f"{keyword}_{n}")
+        urllib.request.urlretrieve(src_url, f"{food_name}_{n}")
         time.sleep(2)
     os.chdir(start_dir)
     return 0
@@ -66,14 +69,13 @@ def download_images_with_keyword(keyword: str):
 
 def scroll_down():
     start_time = time.time()
-    SCROLL_PAUSE_SEC = 2
 
     # 스크롤 높이 가져옴
     last_height = driver.execute_script("return document.body.scrollHeight")
 
     while True:
         spent_time = time.time() - start_time()
-        if (spent_time > 60):
+        if (spent_time > TOTAL_SCROLL_TIME):
             break
 
         # 끝까지 스크롤 다운
@@ -92,4 +94,8 @@ def scroll_down():
 
 if __name__ == "__main__":
     # 검색어 앞에 혜화라는 단어를 붙여서 검색했음
-    download_images_with_keyword("혜화 " + sys.argv[1])
+    # download_images_with_keyword("혜화 " + sys.argv[1]) 이거는 터미널에서 실행할 때 용
+    search_list = ["포보", "써브웨이"]
+    for keyword in search_list:
+        download_images_with_keyword("혜화 " + keyword)
+    
